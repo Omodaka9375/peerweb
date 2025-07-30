@@ -3,9 +3,15 @@
 
 **🌏 Decentralized website hosting powered by WebTorrent 🌏** 
 
-PeerWeb enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
+[PeerWeb](https://peerweb.lol) enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
 
 <img width="1356" height="957" alt="image" src="https://github.com/user-attachments/assets/9b47f09d-e2ca-4b82-a936-ff8445d8a4fa" />
+
+## Where to start
+
+- **Main Mage** - [https://peerweb.lol](https://peerweb.lol)
+
+- **Demo with functionality test** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
 
 
 ## ✨ Features

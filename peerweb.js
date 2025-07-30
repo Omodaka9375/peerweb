@@ -1162,93 +1162,185 @@ class PeerWeb {
         return availabilityRatio >= 0.8;
     }
     
-    async processTorrentEarly(torrent, hash) {
-        this.log('Processing torrent early (before 100% completion)');
+// Update the processTorrentEarly method to prioritize media files
+async processTorrentEarly(torrent, hash) {
+    this.log('Processing torrent early (before 100% completion)');
+    
+    const siteData = {};
+    const files = torrent.files;
+    let processedFiles = 0;
+    let failedFiles = 0;
+    
+    // Sort files by priority (media files last, essential files first)
+    const sortedFiles = files.sort((a, b) => {
+        const aIsMedia = this.isMediaFile(a.name);
+        const bIsMedia = this.isMediaFile(b.name);
+        const aIsEssential = a.name.toLowerCase().includes('index.html') || 
+                           a.name.toLowerCase().endsWith('.css') ||
+                           a.name.toLowerCase().endsWith('.js');
+        const bIsEssential = b.name.toLowerCase().includes('index.html') || 
+                           b.name.toLowerCase().endsWith('.css') ||
+                           b.name.toLowerCase().endsWith('.js');
         
-        const siteData = {};
-        const files = torrent.files;
-        let processedFiles = 0;
-        let failedFiles = 0;
-    
-        this.log(`Processing ${files.length} files (early processing)...`);
-    
-        // Process all files, but be more tolerant of failures
-        for (const file of files) {
-            try {
-                this.log(`Processing file: ${file.name} (${Math.round(file.progress * 100)}% complete)`);
-                
-                // Only process files that are substantially downloaded
-                if (file.progress < 0.8) {
+        // Essential files first
+        if (aIsEssential && !bIsEssential) return -1;
+        if (!aIsEssential && bIsEssential) return 1;
+        
+        // Media files last
+        if (aIsMedia && !bIsMedia) return 1;
+        if (!aIsMedia && bIsMedia) return -1;
+        
+        return 0;
+    });
+
+    this.log(`Processing ${sortedFiles.length} files (early processing)...`);
+
+    // Process files with different thresholds based on type
+    for (const file of sortedFiles) {
+        try {
+            const isMedia = this.isMediaFile(file.name);
+            const isEssential = file.name.toLowerCase().includes('index.html') || 
+                              file.name.toLowerCase().endsWith('.css');
+            
+            // Different download thresholds for different file types
+            let requiredProgress = 0.8; // 80% for regular files
+            if (isEssential) {
+                requiredProgress = 0.9; // 90% for essential files
+            } else if (isMedia) {
+                requiredProgress = 0.7; // 70% for media files (they can stream)
+            }
+            
+            this.log(`Processing file: ${file.name} (${Math.round(file.progress * 100)}% complete, need ${Math.round(requiredProgress * 100)}%)`);
+            
+            if (file.progress < requiredProgress) {
+                if (isMedia) {
+                    // For media files, we'll process them even if not fully downloaded
+                    this.log(`Processing media file early: ${file.name}`);
+                } else {
                     this.log(`Skipping ${file.name} - only ${Math.round(file.progress * 100)}% downloaded`);
                     continue;
                 }
-                
-                const buffer = await this.getFileBufferWithTimeout(file, 5000); // 5 second timeout
-                
-                siteData[file.name] = {
-                    content: buffer,
-                    type: this.getContentType(file.name),
-                    isText: this.isTextFile(file.name),
-                    size: buffer.length
-                };
-                
-                processedFiles++;
-                this.log(`Processed ${file.name} (${buffer.length} bytes, ${siteData[file.name].type})`);
-                
-            } catch (error) {
-                failedFiles++;
-                this.log(`Failed to process file ${file.name}: ${error.message}`);
-                
-                // For critical files like index.html, wait a bit and retry
-                if (file.name.toLowerCase().includes('index.html')) {
-                    try {
-                        this.log(`Retrying critical file: ${file.name}`);
-                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
-                        const buffer = await this.getFileBufferWithTimeout(file, 10000); // 10 second timeout for retry
-                        
-                        siteData[file.name] = {
-                            content: buffer,
-                            type: this.getContentType(file.name),
-                            isText: this.isTextFile(file.name),
-                            size: buffer.length
-                        };
-                        
-                        processedFiles++;
-                        this.log(`Successfully processed ${file.name} on retry`);
-                    } catch (retryError) {
-                        this.log(`Failed to process critical file ${file.name} even on retry: ${retryError.message}`);
-                    }
+            }
+            
+            const timeout = isMedia ? 10000 : 5000; // Longer timeout for media
+            const buffer = await this.getFileBufferWithTimeout(file, timeout);
+            
+            siteData[file.name] = {
+                content: buffer,
+                type: this.getContentType(file.name),
+                isText: this.isTextFile(file.name),
+                isMedia: isMedia,
+                size: buffer.length
+            };
+            
+            processedFiles++;
+            this.log(`Processed ${file.name} (${buffer.length} bytes, ${siteData[file.name].type})`);
+            
+        } catch (error) {
+            failedFiles++;
+            this.log(`Failed to process file ${file.name}: ${error.message}`);
+            
+            // For critical files, retry
+            if (file.name.toLowerCase().includes('index.html')) {
+                try {
+                    this.log(`Retrying critical file: ${file.name}`);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    const buffer = await this.getFileBufferWithTimeout(file, 15000);
+                    
+                    siteData[file.name] = {
+                        content: buffer,
+                        type: this.getContentType(file.name),
+                        isText: this.isTextFile(file.name),
+                        isMedia: false,
+                        size: buffer.length
+                    };
+                    
+                    processedFiles++;
+                    this.log(`Successfully processed ${file.name} on retry`);
+                } catch (retryError) {
+                    this.log(`Failed to process critical file ${file.name} even on retry: ${retryError.message}`);
                 }
             }
         }
-    
-        this.log(`Processing complete: ${processedFiles} files processed, ${failedFiles} files failed`);
-    
-        // Check if we have enough files to display the site
-        if (processedFiles === 0) {
-            this.log('No files were processed successfully, waiting for more download progress...');
-            return;
-        }
-    
-        // Check if we have an index file
-        const hasIndex = Object.keys(siteData).some(name => 
-            name.toLowerCase().includes('index.html')
-        );
-    
-        if (!hasIndex) {
-            this.log('No index.html found in processed files, waiting for more download progress...');
-            return;
-        }
-    
-        this.log(`Successfully processed ${Object.keys(siteData).length} files with index.html present`);
-    
-        // Cache the site (even if incomplete)
-        await this.cache.set(hash, siteData);
-        
-        // Display the site
-        this.displaySite(siteData, hash);
-        this.hideLoadingOverlay();
     }
+
+    this.log(`Processing complete: ${processedFiles} files processed, ${failedFiles} files failed`);
+
+    // Check if we have enough files to display the site
+    if (processedFiles === 0) {
+        this.log('No files were processed successfully, waiting for more download progress...');
+        return;
+    }
+
+    // Check if we have an index file
+    const hasIndex = Object.keys(siteData).some(name => 
+        name.toLowerCase().includes('index.html')
+    );
+
+    if (!hasIndex) {
+        this.log('No index.html found in processed files, waiting for more download progress...');
+        return;
+    }
+
+    this.log(`Successfully processed ${Object.keys(siteData).length} files with index.html present`);
+
+    // Cache the site (even if incomplete)
+    await this.cache.set(hash, siteData);
+    
+    // Display the site
+    this.displaySite(siteData, hash);
+    this.hideLoadingOverlay();
+}
+
+// Add method to check if file is media
+isMediaFile(filename) {
+    const mediaExtensions = ['.mp4', '.webm', '.avi', '.mov', '.wmv', '.flv', '.mkv',
+                           '.mp3', '.wav', '.ogg', '.aac', '.flac', '.m4a',
+                           '.gif']; // Include GIF as it can be large
+    return mediaExtensions.some(ext => filename.toLowerCase().endsWith(ext));
+}
+
+// Update the getContentType method to include more media types
+getContentType(filename) {
+    const ext = filename.toLowerCase().split('.').pop();
+    const mimeTypes = {
+        'html': 'text/html',
+        'htm': 'text/html',
+        'css': 'text/css',
+        'js': 'application/javascript',
+        'mjs': 'application/javascript',
+        'json': 'application/json',
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'svg': 'image/svg+xml',
+        'webp': 'image/webp',
+        'ico': 'image/x-icon',
+        'woff': 'font/woff',
+        'woff2': 'font/woff2',
+        'ttf': 'font/ttf',
+        'otf': 'font/otf',
+        'eot': 'application/vnd.ms-fontobject',
+        // Video formats
+        'mp4': 'video/mp4',
+        'webm': 'video/webm',
+        'avi': 'video/avi',
+        'mov': 'video/quicktime',
+        'wmv': 'video/x-ms-wmv',
+        'flv': 'video/x-flv',
+        'mkv': 'video/x-matroska',
+        // Audio formats
+        'mp3': 'audio/mpeg',
+        'wav': 'audio/wav',
+        'ogg': 'audio/ogg',
+        'aac': 'audio/aac',
+        'flac': 'audio/flac',
+        'm4a': 'audio/mp4',
+        'pdf': 'application/pdf'
+    };
+    return mimeTypes[ext] || 'application/octet-stream';
+}
     
     getFileBufferWithTimeout(file, timeoutMs = 5000) {
         return new Promise((resolve, reject) => {
@@ -1635,6 +1727,7 @@ class PeerWeb {
             'webm': 'video/webm',
             'mp3': 'audio/mpeg',
             'wav': 'audio/wav',
+            'ogg': 'audio/ogg',
             'pdf': 'application/pdf'
         };
         return mimeTypes[ext] || 'application/octet-stream';
