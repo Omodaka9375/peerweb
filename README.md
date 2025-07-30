@@ -1,12 +1,12 @@
 # 🪐 PeerWeb - Decentralized Website Hosting
 
-[![GitHub license](https://img.shields.io/github/license/Omodaka9375/peerweb)](https://github.com/Omodaka9375/peerweb/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/Omodaka9375/peerweb)](https://github.com/Omodaka9375/peerweb/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/Omodaka9375/peerweb)](https://github.com/Omodaka9375/peerweb/issues)
 
 **Revolutionary decentralized website hosting powered by BitTorrent technology** 🚀
 
 PeerWeb enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
+
+<img width="1391" height="926" alt="image" src="https://github.com/user-attachments/assets/79f90f16-62f1-471f-93bb-14d20b39af98" />
+
 
 ## ✨ Features
 
