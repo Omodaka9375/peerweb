@@ -1,7 +1,7 @@
-# 🪐 PeerWeb - Decentralized Website Hosting
+# 🪐 PeerWeb 🪐 
 
 
-**Revolutionary decentralized website hosting powered by BitTorrent technology** 🚀
+**Decentralized website hosting powered by BitTorrent technology** 🚀
 
 PeerWeb enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
 
