@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2210 0 100 100%22><text y=%22.90em%22 font-size=%2290%22>🪐</text></svg>"></link>
+    <title> PeerWeb - Decentralized Website Hosting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2rem 0;
+            color: white;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            margin-left: -35px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        .steps, .req-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step, .req {
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .feature-grid, .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature, .benefit {
+            padding: 1rem;
+            background: #edf2f7;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-debug {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-clear {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-create {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-back {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-secondary {
+            display: none;
+            background: #edf2f7;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .hash-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hash-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 300px;
+        }
+
+        .hash-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .debug-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            max-height: 300px;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 100000;
+        }
+
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .debug-content {
+            height: 200px;
+            overflow-y: auto;
+            padding: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+
+        .progress-container {
+            margin: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #4a5568;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #a0aec0;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .peer-stats {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .site-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1500;
+        }
+
+        .viewer-header {
+            height: 60px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+        }
+
+        .viewer-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .site-frame {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0.5rem;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .file-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .torrent-result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f0fff4;
+            border-radius: 8px;
+            border: 1px solid #9ae6b4;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .tech-stack {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .feature-grid, .benefit-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hash-input-group {
+                flex-direction: column;
+            }
+            
+            .hash-input {
+                min-width: auto;
+            }
+            
+            .debug-panel {
+                width: calc(100% - 40px);
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                z-index: 1000000;
+            }
+        }
+
+        /* File List Container */
+        .file-list-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            color: #333;
+        }
+
+        .file-list-container h4 {
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        .file-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f7fafc;
+        }
+
+        .file-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .file-name {
+            flex: 1;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Torrent Stats */
+        .torrent-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item span:last-child {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .status-seeding {
+            color: #38a169;
+        }
+
+        .status-connecting {
+            color: #ed8936;
+        }
+
+        .status-error {
+            color: #e53e3e;
+        }
+
+        /* Hash and URL display */
+        .hash-display,
+        .url-display {
+            display: block;
+            word-break: break-all;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+
+        /* Result info improvements */
+        .result-info {
+            margin-bottom: 2rem;
+        }
+
+        .result-info p {
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive updates */
+        @media (max-width: 768px) {
+            .file-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .torrent-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .hash-display,
+            .url-display {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Animation for file list */
+        .file-item {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Improved progress bars */
+        .upload-progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        /* Better button styling */
+        .file-actions .btn {
+            min-width: 150px;
+        }
+
+        /* File type icons */
+        .file-icon.html { color: #e34c26; }
+        .file-icon.css { color: #1572b6; }
+        .file-icon.js { color: #f7df1e; }
+        .file-icon.image { color: #ff6b6b; }
+        .file-icon.font { color: #4ecdc4; }
+        .file-icon.other { color: #95a5a6; }
+
+
+        /* Quick Upload Section */
+        .quick-upload {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .quick-upload h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .drop-zone {
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        .drop-content {
+            pointer-events: none;
+        }
+
+        .drop-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .drop-content h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .drop-content p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .drop-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            pointer-events: all;
+        }
+
+        .upload-progress {
+            margin-top: 2rem;
+        }
+
+        .upload-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            color: #333;
+        }
+
+        .result-success h4 {
+            color: #38a169;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .result-info {
+            margin-bottom: 2rem;
+        }
+
+        .result-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .result-info code {
+            background: #f7fafc;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            word-break: break-all;
+            display: inline-block;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .hosting-notice {
+            margin-top: 2rem;
+        }
+
+        .notice-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: #856404;
+        }
+
+        .notice-box h5 {
+            margin-bottom: 1rem;
+            color: #856404;
+            font-size: 1.1rem;
+        }
+
+        .notice-box p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .desktop-clients {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .desktop-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .desktop-link:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .drop-zone.drag-over {
+            animation: pulse 1s infinite;
+        }
+
+        .drop-zone:hover {
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Progress bar styling */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            background: #38a169;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .drop-zone {
+                padding: 2rem 1rem;
+            }
+            
+            .drop-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .desktop-clients {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .result-info code {
+                font-size: 0.75rem;
+            }
+            
+            .drop-icon {
+                font-size: 3rem;
+            }
+            
+            .drop-content h4 {
+                font-size: 1.25rem;
+            }
+            
+            .quick-upload {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Enhanced button styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Success animation */
+        @keyframes success-bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .result-success h4 {
+            animation: success-bounce 1s ease-in-out;
+        }
+
+        /* Loading states */
+        .upload-progress .progress-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* File type indicators */
+        .drop-zone::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .drop-zone:hover::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+        <header class="hero">
+            <h1>🪐 PeerWeb</h1>
+            <h2>🚀 Decentralized Website Hosting via WebTorrent 🚀</h2>
+        </header>
+
+        <main class="container">
+            <section class="intro">
+                <h3>🤔 What is PeerWeb?</h3>
+                <p>PeerWeb is a revolutionary way to host and share websites using WebTorrent technology. Instead of relying on centralized servers, websites are distributed across a peer-to-peer network, making them censorship-resistant and always available. 🌍✨</p>
+            </section>
+
+            <!-- Quick Upload Section -->
+            <section class="quick-upload">
+                <h3>📤 Quick Upload</h3>
+                <div id="drop-zone" class="drop-zone">
+                    <div class="drop-content">
+                        <div class="drop-icon">📁</div>
+                        <h4>Drag & Drop Your Website</h4>
+                        <p>Drop a folder with your website files</p>
+                        <div class="drop-buttons">
+                            <button id="select-folder" class="btn btn-primary">📁 Select Folder</button>
+                            <!-- <button id="select-torrent" class="btn btn-secondary">🧲 Select Torrent</button> -->
+                        </div>
+                    </div>
+                    <div id="upload-progress" class="upload-progress hidden">
+                        <div class="progress-container">
+                            <div id="upload-progress-bar" class="progress-bar"></div>
+                            <div id="upload-progress-text" class="progress-text">Processing files...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="upload-result" class="upload-result hidden">
+                    <div class="result-success">
+                        <h4>✅ Website Ready!</h4>
+                        <div class="result-info">
+                            <p><strong>Hash:</strong> <code id="result-hash"></code></p>
+                            <p><strong>PeerWeb URL:</strong> <code id="result-url"></code></p>
+                        </div>
+                        <div class="result-actions">
+                            <button id="open-site" class="btn btn-primary">🚀 Open Site</button>
+                            <button id="copy-link" class="btn btn-secondary">📋 Copy Link</button>
+                            <a id="download-torrent-file" class="btn btn-secondary" download>💾 Download .torrent</a>
+                        </div>
+                        <div class="hosting-notice">
+                            <div class="notice-box">
+                                <h5>🌐 Hosting Notice</h5>
+                                <p><strong>Keep this PeerWeb tab open to host your site!</strong> As long as this tab remains open, your website will be available to others through the peer-to-peer network.</p>
+                                <p>💡 <strong>Alternative:</strong> Download our desktop client for permanent hosting without keeping browser tabs open:</p>
+                                <div class="desktop-clients">
+                                    <a href="#" class="desktop-link" data-os="windows">🪟 Windows</a>
+                                    <a href="#" class="desktop-link" data-os="mac">🍎 macOS</a>
+                                    <a href="#" class="desktop-link" data-os="linux">🐧 Linux</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="usage">
+                <h3>📚 How to Use PeerWeb</h3>
+                <div class="steps">
+                    <div class="step">🎨 Create your website - Build a static website with HTML, CSS, JavaScript, and assets</div>
+                    <div class="step">📦 Upload via drag & drop - Simply drag your website folder to the upload area above</div>
+                    <div class="step">🔗 Share the link - Your site gets a unique PeerWeb link that works anywhere</div>
+                    <div class="step">🌐 Keep hosting - Leave this tab open or use our desktop client for permanent hosting</div>
+                </div>
+            </section>
+
+            <section class="example">
+                <h3>💡 Load Existing Site</h3>
+                <p>To load a website from a torrent hash, enter it below:</p>
+                <div class="hash-input-group">
+                    <input type="text" id="hash-input" placeholder="Enter torrent hash..." class="hash-input">
+                    <button id="load-site" class="btn btn-primary">Load Site</button>
+                </div>
+                <p>🎯 Just the hash! PeerWeb automatically adds the magnet link prefix and trackers.</p>
+            </section>
+
+            <section class="debug">
+                <h3>🐛 Debug Mode</h3>
+                <p>For developers and troubleshooting, add &debug=true to see detailed progress:</p>
+                <div class="code-block">
+                    <code>https://peerweb.lol?orc=ABC123DEF456...&debug=true</code>
+                </div>
+            </section>
+
+            <section class="controls">
+                <h3>🚀 Advanced Options</h3>
+                <div class="button-group">
+                    <button id="debug-toggle" class="btn btn-debug">🐛 Enable Debug Mode</button>
+                    <button id="clear-cache" class="btn btn-clear">🗑️ Clear Cache</button>
+                    <button id="create-torrent" class="btn btn-create">📦 Advanced Torrent Creator</button>
+                </div>
+            </section>
+
+            <section class="features">
+                <h3>💾 Smart Caching</h3>
+                <p>PeerWeb caches visited sites for lightning-fast loading! 🚀</p>
+                <div class="feature-grid">
+                    <div class="feature">🏃‍♂️ Instant Loading - Cached sites load immediately</div>
+                    <div class="feature">💽 IndexedDB Storage - Persistent across browser sessions</div>
+                    <div class="feature">🧹 Auto Cleanup - Old cache expires after 7 days</div>
+                    <div class="feature">🔒 Secure Storage - Only cached after DOMPurify sanitization</div>
+                </div>
+                <br><br>
+                <h3>🛡️ Security Features</h3>
+                <p>Enhanced security with DOMPurify integration! 🔒</p>
+                <div class="feature-grid">
+                    <div class="feature">🧼 XSS Protection - All HTML sanitized with DOMPurify</div>
+                    <div class="feature">🚫 Malicious Code Removal - Dangerous tags and attributes filtered</div>
+                    <div class="feature">📦 Sandboxed Execution - Sites run in isolated iframe environment</div>
+                    <div class="feature">🔍 Content Validation - All resources validated before display</div>
+                </div>
+            </section>
+
+            <section class="requirements">
+                <h3>📋 Requirements for PeerWeb Sites</h3>
+                <div class="req-list">
+                    <div class="req">📄 Must contain an index.html file (in root or subfolder)</div>
+                    <div class="req">🔗 All resources should use relative paths</div>
+                    <div class="req">⚡ Only static content (HTML, CSS, JS, images, fonts, etc.)</div>
+                    <div class="req">🔒 Files are served in a sandboxed environment for security</div>
+                    <div class="req">📱 Responsive design recommended for best experience</div>
+                    <div class="req">🧹 Content is automatically sanitized for security</div>
+                </div>
+            </section>
+
+            <section class="benefits">
+                <h3>✨ Benefits</h3>
+                <div class="benefit-grid">
+                    <div class="benefit">🚫 Censorship Resistant - No central point of failure</div>
+                    <div class="benefit">💰 Cost Effective - No hosting fees ever</div>
+                    <div class="benefit">🌍 Global Distribution - Automatically distributed worldwide</div>
+                    <div class="benefit">📱 Always Available - Works as long as peers are online</div>
+                    <div class="benefit">🔒 Secure - Sandboxed execution with XSS protection</div>
+                    <div class="benefit">📊 Real-time Progress - See download progress and peer statistics</div>
+                    <div class="benefit">⚡ Fast Loading - Smart caching for instant repeat visits</div>
+                    <div class="benefit">🎯 Simple URLs - Just add the torrent hash to any PeerWeb site</div>
+                    <div class="benefit">💾 Offline Ready - Cached sites work without internet</div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>🌟 Made with ❤️ for the decentralized web 🌟</p>
+            <p class="tech-stack">Powered by WebTorrent Protocol • Secured by DOMPurify & Sandboxing • Cached with IndexedDB</p>
+        </footer>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="folder-input" webkitdirectory style="display: none;">
+    <input type="file" id="torrent-input" accept=".torrent" style="display: none;">
+
+    <!-- Debug Panel -->
+    <div id="debug-panel" class="debug-panel hidden">
+        <div class="debug-header">
+            <h4>🐛 Debug Console</h4>
+            <button id="close-debug" class="close-btn">×</button>
+        </div>
+        <div id="debug-content" class="debug-content"></div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+            <div id="progress-text" class="progress-text">Ready...</div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3>Loading PeerWeb Site...</h3>
+            <div id="loading-progress" class="progress-container">
+                <div id="loading-progress-bar" class="progress-bar"></div>
+                <div id="loading-progress-text" class="progress-text">Connecting to peers...</div>
+            </div>
+            <div id="peer-stats" class="peer-stats"></div>
+        </div>
+    </div>
+
+    <!-- Site Viewer -->
+    <div id="site-viewer" class="site-viewer hidden">
+        <!-- <div class="viewer-header">
+            <button id="back-to-peerweb" class="btn btn-back">← Back to PeerWeb</button>
+            <div class="viewer-info">
+                <span id="current-hash"></span>
+                <span id="cache-status"></span>
+            </div>
+        </div> -->
+        <iframe id="site-frame" class="site-frame" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+    </div>
+
+    <!-- Torrent Creator Modal -->
+    <div id="torrent-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📦 Advanced Torrent Creator</h3>
+                <button id="close-modal" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Select your website files to create a torrent:</p>
+                <input type="file" id="file-input" multiple webkitdirectory class="file-input">
+                <div id="file-list" class="file-list"></div>
+                <button id="create-torrent-btn" class="btn btn-primary" disabled>Create Torrent</button>
+                <div id="torrent-result" class="torrent-result hidden">
+                    <h4>✅ Torrent Created!</h4>
+                    <p>Hash: <code id="created-hash"></code></p>
+                    <p>URL: <code id="created-url"></code></p>
+                    <button id="copy-url" class="btn btn-secondary">Copy URL</button>
+                    <a id="download-torrent" class="btn btn-secondary" download="website.torrent">Download .torrent</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        class PeerWeb{constructor(){this.client=null;this.debug=!1;this.cache=new PeerWebCache();this.currentSiteData=null;this.currentHash=null;this.serviceWorkerReady=!1;this.clientReady=!1;this.librariesLoaded=!1;this.trackers=['wss://tracker.btorrent.xyz','wss://tracker.openwebtorrent.com','udp://tracker.leechers-paradise.org:6969','udp://tracker.coppersurfer.tk:6969','udp://tracker.opentrackr.org:1337','udp://explodie.org:6969','udp://tracker.empire-js.us:1337'];this.init()}
+        async init(){try{await this.loadRequiredLibraries();await this.initializeWebTorrent();await this.registerServiceWorker();this.setupEventListeners();this.checkURL();this.updateDebugToggle()}catch(error){console.error('PeerWeb initialization failed:',error);this.showError('Failed to initialize PeerWeb: '+error.message)}}
+        async loadRequiredLibraries(){this.log('Loading required libraries...');if(typeof WebTorrent==='undefined'){await this.loadScript('https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js');this.log('WebTorrent library loaded')}
+        if(typeof DOMPurify==='undefined'){await this.loadScript('https://cdn.jsdelivr.net/npm/dompurify@2.4.7/dist/purify.min.js');this.log('DOMPurify library loaded')}
+        if(typeof WebTorrent==='undefined'){throw new Error('Failed to load WebTorrent library')}
+        if(typeof DOMPurify==='undefined'){throw new Error('Failed to load DOMPurify library')}
+        this.librariesLoaded=!0;this.log('All required libraries loaded successfully')}
+        loadScript(src){return new Promise((resolve,reject)=>{const existingScript=document.querySelector(`script[src="${src}"]`);if(existingScript){resolve();return}
+        const script=document.createElement('script');script.src=src;script.async=!0;script.onload=()=>{this.log(`Script loaded: ${src}`);resolve()};script.onerror=(error)=>{this.log(`Failed to load script: ${src}`);reject(new Error(`Failed to load script: ${src}`))};document.head.appendChild(script);setTimeout(()=>{if(!script.onload.called){reject(new Error(`Script load timeout: ${src}`))}},10000)})}
+        async initializeWebTorrent(){if(!this.librariesLoaded){throw new Error('Libraries not loaded yet')}
+        return new Promise((resolve)=>{try{this.client=new WebTorrent();this.client.on('error',(err)=>{this.log('WebTorrent error: '+err.message);console.error('WebTorrent error:',err)});this.client.on('ready',()=>{this.clientReady=!0;this.log('WebTorrent client ready');resolve()});setTimeout(()=>{if(!this.clientReady){this.clientReady=!0;this.log('WebTorrent client ready (timeout fallback)');resolve()}},2000)}catch(error){this.log('Error initializing WebTorrent: '+error.message);console.error('WebTorrent initialization error:',error);this.client={add:()=>console.error('WebTorrent not available'),seed:()=>console.error('WebTorrent not available')};resolve()}})}
+        async registerServiceWorker(){if('serviceWorker' in navigator){try{const registrations=await navigator.serviceWorker.getRegistrations();for(let registration of registrations){await registration.unregister();this.log('Unregistered existing service worker')}
+        const registration=await navigator.serviceWorker.register('./peerweb-sw.js',{scope:'/'});this.log('Service Worker registered successfully');await navigator.serviceWorker.ready;this.serviceWorkerReady=!0;this.log('Service Worker is ready');navigator.serviceWorker.addEventListener('message',(event)=>{this.log(`SW Message: ${event.data.type}`);if(event.data.type==='RESOURCE_REQUEST'){this.handleServiceWorkerResourceRequest(event.data.url,event.data.requestId,event.data.filePath)}});if(registration.waiting){registration.waiting.postMessage({type:'SKIP_WAITING'})}}catch(error){this.log('Service Worker registration failed: '+error.message);console.error('SW Error:',error)}}else{this.log('Service Workers not supported')}}
+        handleServiceWorkerResourceRequest(url,requestId,providedFilePath=null){this.log(`SW requesting: ${url} (ID: ${requestId})`);if(!this.currentSiteData){this.log('No site data available');this.sendToServiceWorker('RESOURCE_RESPONSE',{requestId,url,data:null});return}
+        let filePath=providedFilePath;if(!filePath){const urlObj=new URL(url);const pathParts=urlObj.pathname.split('/');filePath=pathParts.slice(3).join('/');if(!filePath||filePath===''){filePath='index.html'}}
+        this.log(`Looking for file: "${filePath}"`);const file=this.findFileInSiteData(filePath);if(file){this.log(`Found file: ${filePath} (${file.size} bytes, ${file.type})`);const dataArray=Array.from(new Uint8Array(file.content));this.sendToServiceWorker('RESOURCE_RESPONSE',{requestId,url,data:dataArray,contentType:file.type})}else{this.log(`File not found: ${filePath}`);this.log(`Available files: ${Object.keys(this.currentSiteData).join(', ')}`);this.sendToServiceWorker('RESOURCE_RESPONSE',{requestId,url,data:null})}}
+        sendToServiceWorker(type,data){if(navigator.serviceWorker.controller){navigator.serviceWorker.controller.postMessage({type,...data});this.log(`Sent to SW: ${type}`)}else{this.log('No SW controller available')}}
+        findFileInSiteData(requestedPath){if(!this.currentSiteData)return null;this.log(`Searching for: "${requestedPath}"`);let cleanPath=requestedPath;if(cleanPath.startsWith('./'))cleanPath=cleanPath.substring(2);if(cleanPath.startsWith('/'))cleanPath=cleanPath.substring(1);const exactMatches=[requestedPath,cleanPath];for(const path of exactMatches){if(this.currentSiteData[path]){this.log(`Exact match: ${path}`);return this.currentSiteData[path]}}
+        const allKeys=Object.keys(this.currentSiteData);this.log(`All available files: ${allKeys.join(', ')}`);const fileName=cleanPath.split('/').pop();for(const key of allKeys){const keyFileName=key.split('/').pop();if(keyFileName===fileName){this.log(`Filename match: ${key}`);return this.currentSiteData[key]}}
+        for(const key of allKeys){if(key.endsWith(cleanPath)||cleanPath.endsWith(key)){this.log(`Partial match: ${key}`);return this.currentSiteData[key]}}
+        return null}
+        setupEventListeners(){const debugToggle=document.getElementById('debug-toggle');if(debugToggle){debugToggle.addEventListener('click',()=>{this.toggleDebug()})}
+        const clearCache=document.getElementById('clear-cache');if(clearCache){clearCache.addEventListener('click',()=>{this.clearCache()})}
+        const createTorrent=document.getElementById('create-torrent');if(createTorrent){createTorrent.addEventListener('click',()=>{this.showTorrentModal()})}
+        const loadSite=document.getElementById('load-site');if(loadSite){loadSite.addEventListener('click',()=>{const hash=document.getElementById('hash-input').value.trim();if(hash){this.loadSite(hash)}})}
+        const hashInput=document.getElementById('hash-input');if(hashInput){hashInput.addEventListener('keypress',(e)=>{if(e.key==='Enter'){const hash=e.target.value.trim();if(hash){this.loadSite(hash)}}})}
+        const backButton=document.getElementById('back-to-peerweb');if(backButton){backButton.addEventListener('click',()=>{this.showMainContent()})}
+        const closeDebug=document.getElementById('close-debug');if(closeDebug){closeDebug.addEventListener('click',()=>{document.getElementById('debug-panel').classList.add('hidden')})}
+        const closeModal=document.getElementById('close-modal');if(closeModal){closeModal.addEventListener('click',()=>{this.hideTorrentModal()})}
+        const fileInput=document.getElementById('file-input');if(fileInput){fileInput.addEventListener('change',(e)=>{this.handleFileSelection(e)})}
+        const createTorrentBtn=document.getElementById('create-torrent-btn');if(createTorrentBtn){createTorrentBtn.addEventListener('click',()=>{this.createTorrent()})}
+        const copyUrl=document.getElementById('copy-url');if(copyUrl){copyUrl.addEventListener('click',()=>{const url=document.getElementById('created-url').textContent;navigator.clipboard.writeText(url);alert('URL copied to clipboard!')})}
+        this.setupDragAndDrop();this.setupQuickUpload()}
+        setupDragAndDrop(){const dropZone=document.getElementById('drop-zone');const folderInput=document.getElementById('folder-input');const torrentInput=document.getElementById('torrent-input');if(!dropZone)return;['dragenter','dragover','dragleave','drop'].forEach(eventName=>{dropZone.addEventListener(eventName,(e)=>{e.preventDefault();e.stopPropagation()})});['dragenter','dragover'].forEach(eventName=>{dropZone.addEventListener(eventName,()=>{dropZone.classList.add('drag-over')})});['dragleave','drop'].forEach(eventName=>{dropZone.addEventListener(eventName,()=>{dropZone.classList.remove('drag-over')})});dropZone.addEventListener('drop',(e)=>{const files=Array.from(e.dataTransfer.files);this.handleDroppedFiles(files)});const selectFolder=document.getElementById('select-folder');if(selectFolder&&folderInput){selectFolder.addEventListener('click',()=>{folderInput.click()})}
+        const selectTorrent=document.getElementById('select-torrent');if(selectTorrent&&torrentInput){selectTorrent.addEventListener('click',()=>{torrentInput.click()})}
+        if(folderInput){folderInput.addEventListener('change',(e)=>{const files=Array.from(e.target.files);this.handleDroppedFiles(files)})}
+        if(torrentInput){torrentInput.addEventListener('change',(e)=>{const files=Array.from(e.target.files);this.handleDroppedFiles(files)})}}
+        setupQuickUpload(){const openSite=document.getElementById('open-site');if(openSite){openSite.addEventListener('click',()=>{const hash=document.getElementById('result-hash').textContent;const url=`${window.location.origin}${window.location.pathname}?orc=${hash}`;window.open(url,'_blank')})}
+        const copyLink=document.getElementById('copy-link');if(copyLink){copyLink.addEventListener('click',()=>{const url=document.getElementById('result-url').textContent;navigator.clipboard.writeText(url).then(()=>{const button=document.getElementById('copy-link');const originalText=button.textContent;button.textContent='✅ Copied!';setTimeout(()=>{button.textContent=originalText},2000)})})}
+        document.querySelectorAll('.desktop-link').forEach(link=>{link.addEventListener('click',(e)=>{e.preventDefault();const os=e.target.dataset.os;this.downloadDesktopClient(os)})})}
+        handleDroppedFiles(files){if(files.length===0)return;this.log(`Dropped ${files.length} files`);if(!this.clientReady||!this.client){this.log('WebTorrent client not ready, waiting...');this.showUploadProgress('WebTorrent client is loading...');setTimeout(()=>{this.hideUploadProgress();this.handleDroppedFiles(files)},1000);return}
+        const torrentFiles=files.filter(file=>file.name.toLowerCase().endsWith('.torrent')&&file.type==='application/x-bittorrent');if(torrentFiles.length===0){const torrentFilesByExt=files.filter(file=>file.name.toLowerCase().endsWith('.torrent'));if(torrentFilesByExt.length>0){this.log(`Found ${torrentFilesByExt.length} .torrent files (by extension)`);this.handleTorrentFile(torrentFilesByExt[0]);return}}else{this.log(`Found ${torrentFiles.length} .torrent files (by MIME type)`);this.handleTorrentFile(torrentFiles[0]);return}
+        if(files.length>1){this.handleFolderUpload(files);return}
+        const singleFile=files[0];if(singleFile.name.toLowerCase().endsWith('.html')){this.handleFolderUpload(files);return}
+        if(files.length===1&&singleFile.size<1024*1024){this.log('Single small file detected, checking if it\'s a torrent...');this.readFileAsArrayBuffer(singleFile).then(buffer=>{if(this.isValidTorrentBuffer(buffer)){this.log('File appears to be a torrent despite extension');this.handleTorrentFile(singleFile)}else{alert('Please drop a website folder or a valid .torrent file')}}).catch(error=>{this.log(`Error checking file: ${error.message}`);alert('Please drop a website folder or a .torrent file')});return}
+        alert('Please drop a website folder or a .torrent file')}
+        async handleTorrentFile(torrentFile){this.log(`Loading torrent file: ${torrentFile.name} (${torrentFile.size} bytes)`);if(!this.clientReady||!this.client){alert('WebTorrent client not ready. Please wait a moment and try again.');return}
+        this.showUploadProgress('Reading torrent file...');try{const buffer=await this.readFileAsArrayBuffer(torrentFile);this.log(`Torrent file read: ${buffer.byteLength} bytes`);if(!this.isValidTorrentBuffer(buffer)){throw new Error('Invalid torrent file format')}
+        this.log('Torrent file validation passed, adding to WebTorrent...');this.addTorrentWithFallback(buffer,torrentFile)}catch(error){this.log(`Error loading torrent: ${error.message}`);console.error('Torrent loading error:',error);this.hideUploadProgress();if(error.message.includes('Invalid torrent identifier')){alert('Invalid torrent file. The file may be corrupted or incompatible with WebTorrent.\n\nTry creating a new torrent with the Advanced Torrent Creator.')}else if(error.message.includes('Invalid torrent file format')){alert('This doesn\'t appear to be a valid torrent file. Please check the file and try again.')}else{alert('Error loading torrent file: '+error.message+'\n\nPlease try creating a new torrent or check if the file is valid.')}}}
+        addTorrentWithFallback(buffer,originalFile){let attempts=0;const maxAttempts=3;const tryAddTorrent=(torrentData,method)=>{attempts++;this.log(`Attempt ${attempts}: Trying to add torrent using ${method}`);try{this.client.add(torrentData,{announce:this.trackers,path:'/tmp/webtorrent/'},(torrent)=>{this.log(`Torrent loaded successfully with ${method}: ${torrent.infoHash}`);this.log(`Torrent name: ${torrent.name || 'Unknown'}`);this.log(`Number of files: ${torrent.files.length}`);torrent.files.forEach((file,index)=>{this.log(`File ${index + 1}: ${file.name} (${file.length} bytes)`)});this.showUploadResult(torrent.infoHash,buffer,torrent);this.hideUploadProgress();torrent.files.forEach(file=>file.select());this.log(`Started downloading ${torrent.files.length} files`)})}catch(error){this.log(`Failed with ${method}: ${error.message}`);if(attempts<maxAttempts){if(attempts===1){const uint8Array=new Uint8Array(buffer);tryAddTorrent(uint8Array,'Uint8Array')}else if(attempts===2){this.tryBlobMethod(originalFile)}}else{this.hideUploadProgress();throw new Error(`All methods failed. Last error: ${error.message}`)}}};tryAddTorrent(buffer,'ArrayBuffer')}
+        async tryBlobMethod(originalFile){try{this.log('Trying blob method...');const blob=new Blob([originalFile],{type:'application/x-bittorrent'});const reader=new FileReader();reader.onload=(event)=>{try{const buffer=event.target.result;const uint8Array=new Uint8Array(buffer);this.log(`Blob method: read ${uint8Array.length} bytes`);this.client.add(uint8Array,{announce:this.trackers},(torrent)=>{this.log(`Torrent loaded successfully with blob method: ${torrent.infoHash}`);this.showUploadResult(torrent.infoHash,buffer,torrent);this.hideUploadProgress();torrent.files.forEach(file=>file.select())})}catch(error){this.log(`Blob method failed: ${error.message}`);this.hideUploadProgress();throw error}};reader.onerror=()=>{this.log('Blob method: FileReader error');this.hideUploadProgress();throw new Error('Failed to read file with blob method')};reader.readAsArrayBuffer(blob)}catch(error){this.log(`Blob method error: ${error.message}`);this.hideUploadProgress();throw error}}
+        isValidTorrentBuffer(buffer){try{const uint8Array=new Uint8Array(buffer);this.log(`Validating torrent buffer: ${uint8Array.length} bytes`);if(uint8Array.length<50){this.log('Torrent file too small');return!1}
+        if(uint8Array[0]!==0x64){this.log(`Invalid start byte: 0x${uint8Array[0].toString(16)} (expected 0x64 for 'd')`);return!1}
+        if(uint8Array[uint8Array.length-1]!==0x65){this.log(`Invalid end byte: 0x${uint8Array[uint8Array.length - 1].toString(16)} (expected 0x65 for 'e')`)}
+        const dataString=new TextDecoder('utf-8',{fatal:!1}).decode(uint8Array);this.log(`Torrent content preview: ${dataString.substring(0, 200)}`);const hasAnnounce=dataString.includes('announce')||this.findBencodedString(uint8Array,'announce');const hasInfo=dataString.includes('info')||this.findBencodedString(uint8Array,'info');this.log(`Torrent validation - announce: ${hasAnnounce}, info: ${hasInfo}`);if(!hasAnnounce||!hasInfo){this.log('Missing required torrent fields (announce or info)');return!1}
+        const hasPieceLength=dataString.includes('piece length')||this.findBencodedString(uint8Array,'piece length');const hasPieces=dataString.includes('pieces')||this.findBencodedString(uint8Array,'pieces');this.log(`Additional validation - piece length: ${hasPieceLength}, pieces: ${hasPieces}`);this.log('Torrent file validation passed');return!0}catch(error){this.log(`Torrent validation error: ${error.message}`);return!1}}
+        findBencodedString(uint8Array,searchString){try{const searchBytes=new TextEncoder().encode(`${searchString.length}:${searchString}`);for(let i=0;i<=uint8Array.length-searchBytes.length;i++){let match=!0;for(let j=0;j<searchBytes.length;j++){if(uint8Array[i+j]!==searchBytes[j]){match=!1;break}}
+        if(match){return!0}}
+        return!1}catch(error){return!1}}
+        readFileAsArrayBuffer(file){return new Promise((resolve,reject)=>{if(!file||!(file instanceof File)){reject(new Error('Invalid file object'));return}
+        this.log(`Reading file: ${file.name}, size: ${file.size}, type: ${file.type}`);const reader=new FileReader();reader.onload=(event)=>{const result=event.target.result;if(result&&result.byteLength>0){this.log(`File read successfully: ${result.byteLength} bytes`);resolve(result)}else{reject(new Error('File reading returned empty result'))}};reader.onerror=()=>{const error=reader.error||new Error('Unknown FileReader error');this.log(`FileReader error: ${error.message}`);reject(new Error('File reading failed: '+error.message))};reader.onabort=()=>{this.log('FileReader aborted');reject(new Error('File reading was aborted'))};reader.onprogress=(event)=>{if(event.lengthComputable){const progress=Math.round((event.loaded/event.total)*100);this.log(`Reading file: ${progress}%`)}};try{reader.readAsArrayBuffer(file)}catch(error){this.log(`Failed to start file reading: ${error.message}`);reject(new Error('Failed to start file reading: '+error.message))}})}
+        async handleFolderUpload(files){this.log(`Processing ${files.length} files for upload`);if(!this.clientReady||!this.client){alert('WebTorrent client not ready. Please wait a moment and try again.');return}
+        const hasIndex=files.some(file=>(file.webkitRelativePath||file.name).toLowerCase().includes('index.html'));if(!hasIndex){if(!confirm('No index.html found. Continue anyway? (Site may not load properly)')){return}}
+        this.showUploadProgress('Creating torrent...');try{this.client.seed(files,{announce:this.trackers,name:this.generateTorrentName(files),comment:'Created with PeerWeb - Decentralized Website Hosting',createdBy:'PeerWeb v1.0',private:!1,pieceLength:this.calculateOptimalPieceLength(files)},(torrent)=>{this.log(`Torrent created: ${torrent.infoHash}`);this.log(`Torrent name: ${torrent.name}`);this.showUploadResult(torrent.infoHash,torrent.torrentFile,torrent);this.hideUploadProgress()})}catch(error){this.log(`Error creating torrent: ${error.message}`);console.error('Seeding error:',error);this.hideUploadProgress();alert('Error creating torrent: '+error.message)}}
+        showUploadProgress(message){const progressEl=document.getElementById('upload-progress');const textEl=document.getElementById('upload-progress-text');const resultEl=document.getElementById('upload-result');if(progressEl)progressEl.classList.remove('hidden');if(textEl)textEl.textContent=message;if(resultEl)resultEl.classList.add('hidden');}
+        hideUploadProgress(){const progressEl=document.getElementById('upload-progress');if(progressEl)progressEl.classList.add('hidden');}
+        showUploadResult(hash,torrentFile,torrent){const url=`${window.location.origin}${window.location.pathname}?orc=${hash}`;const hashEl=document.getElementById('result-hash');const urlEl=document.getElementById('result-url');const resultEl=document.getElementById('upload-result');if(hashEl)hashEl.textContent=hash;if(urlEl)urlEl.textContent=url;if(torrentFile){const downloadLink=document.getElementById('download-torrent-file');if(downloadLink){downloadLink.href=URL.createObjectURL(new Blob([torrentFile]));downloadLink.download=`website-${hash.substring(0, 8)}.torrent`;downloadLink.style.display='inline-flex'}}else{const downloadLink=document.getElementById('download-torrent-file');if(downloadLink){downloadLink.style.display='none'}}
+        if(resultEl)resultEl.classList.remove('hidden');if(torrent){this.updateSeedingStats(torrent)}}
+        updateSeedingStats(torrent){torrent.on('upload',()=>{this.log(`Uploaded: ${this.formatBytes(torrent.uploaded)} to ${torrent.numPeers} peers`)})}
+        downloadDesktopClient(os){const downloadUrls={'windows':'https://github.com/peerweb/peerweb-desktop/releases/download/v1.0.0/PeerWeb-Setup-1.0.0.exe','mac':'https://github.com/peerweb/peerweb-desktop/releases/download/v1.0.0/PeerWeb-1.0.0.dmg','linux':'https://github.com/peerweb/peerweb-desktop/releases/download/v1.0.0/PeerWeb-1.0.0.AppImage'};const url=downloadUrls[os];if(url){window.open(url,'_blank');this.log(`Opened desktop client download for ${os}`)}else{alert('Desktop client for '+os+' is coming soon!')}}
+        readFileAsArrayBuffer(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsArrayBuffer(file)})}
+        checkURL(){const urlParams=new URLSearchParams(window.location.search);const orcHash=urlParams.get('orc');const debugMode=urlParams.get('debug')==='true';if(debugMode){this.debug=!0;this.updateDebugToggle();this.showDebugPanel()}
+        if(orcHash){const checkReady=()=>{if(this.serviceWorkerReady&&this.clientReady&&this.librariesLoaded){this.loadSite(orcHash)}else{setTimeout(checkReady,500)}};checkReady()}}
+        async loadSite(hash){this.log(`Loading site with hash: ${hash}`);if(!this.serviceWorkerReady){this.log('Service worker not ready, waiting...');setTimeout(()=>this.loadSite(hash),500);return}
+        if(!this.clientReady||!this.client){this.log('WebTorrent client not ready, waiting...');setTimeout(()=>this.loadSite(hash),500);return}
+        if(!this.isValidTorrentHash(hash)){alert('Invalid torrent hash format. Please check the hash and try again.');return}
+        this.currentHash=hash;const cachedSite=await this.cache.get(hash);if(cachedSite){this.log('Loading from cache...');this.displayCachedSite(cachedSite,hash);return}
+        this.showLoadingOverlay();const magnetURI=`magnet:?xt=urn:btih:${hash}&tr=${this.trackers.join('&tr=')}`;this.log(`Magnet URI: ${magnetURI}`);try{this.client.add(magnetURI,async(torrent)=>{this.log(`Torrent added: ${torrent.name || 'Unknown'}`);this.updatePeerStats(torrent);let siteProcessed=!1;let processingTimeout=null;torrent.on('download',()=>{this.updateProgress(torrent);this.updatePeerStats(torrent);if(!siteProcessed&&this.shouldProcessSiteEarly(torrent)){this.log('Sufficient data downloaded, processing site early...');siteProcessed=!0;if(processingTimeout){clearTimeout(processingTimeout);processingTimeout=null}
+        this.processTorrentEarly(torrent,hash)}});torrent.on('done',async()=>{this.log('Download completed (100%)!');if(!siteProcessed){siteProcessed=!0;if(processingTimeout){clearTimeout(processingTimeout);processingTimeout=null}
+        await this.processTorrent(torrent,hash)}});torrent.on('error',(error)=>{this.log(`Torrent error: ${error.message}`);this.hideLoadingOverlay();alert('Error loading torrent: '+error.message)});torrent.files.forEach(file=>file.select());this.log(`Selected ${torrent.files.length} files for download`);const indexFile=this.findIndexFile(torrent.files);if(!indexFile){this.log('No index.html found!');this.hideLoadingOverlay();alert('No index.html file found in torrent!');return}
+        this.log(`Found index file: ${indexFile.name}`);processingTimeout=setTimeout(()=>{if(!siteProcessed&&torrent.progress>0.8){this.log('Processing site due to timeout (80%+ downloaded)');siteProcessed=!0;this.processTorrentEarly(torrent,hash)}},15000)})}catch(error){this.log(`Error adding torrent: ${error.message}`);this.hideLoadingOverlay();alert('Error loading torrent: '+error.message)}}
+        isValidTorrentHash(hash){if(!hash||typeof hash!=='string'){return!1}
+        hash=hash.trim();if(hash.length!==40){this.log(`Invalid hash length: ${hash.length}, expected 40`);return!1}
+        const hexRegex=/^[a-fA-F0-9]+$/;if(!hexRegex.test(hash)){this.log('Hash contains non-hexadecimal characters');return!1}
+        return!0}
+        shouldProcessSiteEarly(torrent){if(torrent.progress>=0.95){this.log(`Progress at ${Math.round(torrent.progress * 100)}%, processing early`);return!0}
+        const indexFile=this.findIndexFile(torrent.files);if(indexFile&&this.hasEssentialFiles(torrent)){this.log('Essential files available, processing early');return!0}
+        return!1}
+        hasEssentialFiles(torrent){let availableFiles=0;let totalFiles=torrent.files.length;torrent.files.forEach(file=>{if(file.progress>=0.9){availableFiles++}});const availabilityRatio=availableFiles/totalFiles;this.log(`File availability: ${availableFiles}/${totalFiles} (${Math.round(availabilityRatio * 100)}%)`);return availabilityRatio>=0.8}
+        async processTorrentEarly(torrent,hash){this.log('Processing torrent early (before 100% completion)');const siteData={};const files=torrent.files;let processedFiles=0;let failedFiles=0;this.log(`Processing ${files.length} files (early processing)...`);for(const file of files){try{this.log(`Processing file: ${file.name} (${Math.round(file.progress * 100)}% complete)`);if(file.progress<0.8){this.log(`Skipping ${file.name} - only ${Math.round(file.progress * 100)}% downloaded`);continue}
+        const buffer=await this.getFileBufferWithTimeout(file,5000);siteData[file.name]={content:buffer,type:this.getContentType(file.name),isText:this.isTextFile(file.name),size:buffer.length};processedFiles++;this.log(`Processed ${file.name} (${buffer.length} bytes, ${siteData[file.name].type})`)}catch(error){failedFiles++;this.log(`Failed to process file ${file.name}: ${error.message}`);if(file.name.toLowerCase().includes('index.html')){try{this.log(`Retrying critical file: ${file.name}`);await new Promise(resolve=>setTimeout(resolve,1000));const buffer=await this.getFileBufferWithTimeout(file,10000);siteData[file.name]={content:buffer,type:this.getContentType(file.name),isText:this.isTextFile(file.name),size:buffer.length};processedFiles++;this.log(`Successfully processed ${file.name} on retry`)}catch(retryError){this.log(`Failed to process critical file ${file.name} even on retry: ${retryError.message}`)}}}}
+        this.log(`Processing complete: ${processedFiles} files processed, ${failedFiles} files failed`);if(processedFiles===0){this.log('No files were processed successfully, waiting for more download progress...');return}
+        const hasIndex=Object.keys(siteData).some(name=>name.toLowerCase().includes('index.html'));if(!hasIndex){this.log('No index.html found in processed files, waiting for more download progress...');return}
+        this.log(`Successfully processed ${Object.keys(siteData).length} files with index.html present`);await this.cache.set(hash,siteData);this.displaySite(siteData,hash);this.hideLoadingOverlay()}
+        getFileBufferWithTimeout(file,timeoutMs=5000){return new Promise((resolve,reject)=>{const timeout=setTimeout(()=>{reject(new Error(`File buffer timeout after ${timeoutMs}ms`))},timeoutMs);file.getBuffer((err,buffer)=>{clearTimeout(timeout);if(err){reject(err)}else{resolve(buffer)}})})}
+        findIndexFile(files){return files.find(file=>{const name=file.name.toLowerCase();return name==='index.html'||name.endsWith('/index.html')})}
+        async processTorrent(torrent,hash){const siteData={};const files=torrent.files;this.log(`Processing ${files.length} files...`);for(const file of files){try{this.log(`Processing file: ${file.name}`);const buffer=await this.getFileBuffer(file);siteData[file.name]={content:buffer,type:this.getContentType(file.name),isText:this.isTextFile(file.name),size:buffer.length};this.log(`Processed ${file.name} (${buffer.length} bytes, ${siteData[file.name].type})`)}catch(error){this.log(`Error processing file ${file.name}: ${error.message}`)}}
+        this.log(`Successfully processed ${Object.keys(siteData).length} files`);this.log(`File list: ${Object.keys(siteData).join(', ')}`);await this.cache.set(hash,siteData);this.displaySite(siteData,hash);this.hideLoadingOverlay()}
+        async displayCachedSite(siteData,hash){this.displaySite(siteData,hash,!0)}
+        displaySite(siteData,hash,fromCache=!1){this.log(`Displaying site with ${Object.keys(siteData).length} files`);this.log(`Files: ${Object.keys(siteData).join(', ')}`);this.currentSiteData=siteData;this.currentHash=hash;this.sendToServiceWorker('SITE_READY',{hash,fileCount:Object.keys(siteData).length,fileList:Object.keys(siteData)});const indexFileName=Object.keys(siteData).find(name=>{const lowerName=name.toLowerCase();return lowerName==='index.html'||lowerName.endsWith('/index.html')});if(!indexFileName){alert('No index.html found!');return}
+        this.log(`Found index file: ${indexFileName}`);const indexFile=siteData[indexFileName];let htmlContent=new TextDecoder().decode(indexFile.content);this.log('Processing HTML content...');htmlContent=this.processHtmlForPeerWeb(htmlContent,siteData,indexFileName,hash);htmlContent=this.sanitizeHtml(htmlContent);this.log('HTML content processed and sanitized');const blob=new Blob([htmlContent],{type:'text/html'});const url=URL.createObjectURL(blob);const siteUrl=`${window.location.origin}/peerweb-site/${hash}/`;this.log(`Site URL: ${siteUrl}`);setTimeout(()=>{this.showSiteViewer(siteUrl,hash,fromCache)},100)}
+        processHtmlForPeerWeb(html,siteData,indexFileName,hash){this.log('Processing HTML for PeerWeb...');const parser=new DOMParser();const doc=parser.parseFromString(html,'text/html');const indexBasePath=indexFileName.includes('/')?indexFileName.substring(0,indexFileName.lastIndexOf('/')+1):'';const elementsToProcess=[{selector:'link[href]',attr:'href'},{selector:'script[src]',attr:'src'},{selector:'img[src]',attr:'src'},{selector:'source[src]',attr:'src'},{selector:'source[srcset]',attr:'srcset'},{selector:'img[srcset]',attr:'srcset'},{selector:'video[src]',attr:'src'},{selector:'audio[src]',attr:'src'},{selector:'embed[src]',attr:'src'},{selector:'object[data]',attr:'data'}];elementsToProcess.forEach(({selector,attr})=>{const elements=doc.querySelectorAll(selector);this.log(`Processing ${elements.length} elements with selector: ${selector}`);elements.forEach(element=>{const originalUrl=element.getAttribute(attr);if(originalUrl&&this.isInternalResource(originalUrl)){const newUrl=this.convertToVirtualUrl(originalUrl,indexBasePath,hash);if(newUrl){element.setAttribute(attr,newUrl);this.log(`Converted internal resource: ${originalUrl} -> ${newUrl}`)}else{this.log(`Could not convert internal resource: ${originalUrl}`)}}else if(originalUrl){this.log(`Preserving external resource: ${originalUrl}`)}})});const links=doc.querySelectorAll('a[href]');this.log(`Processing ${links.length} navigation links`);links.forEach(link=>{const href=link.getAttribute('href');if(href&&this.isInternalNavigation(href)){const newHref=this.convertNavigationToVirtualUrl(href,indexBasePath,hash);if(newHref){link.setAttribute('href',newHref);this.log(`Converted internal navigation: ${href} -> ${newHref}`)}}else if(href){this.log(`Preserving external link: ${href}`)}});const styleElements=doc.querySelectorAll('style');styleElements.forEach(styleElement=>{const cssContent=styleElement.textContent;const updatedCss=this.processCssContent(cssContent,indexBasePath,hash);styleElement.textContent=updatedCss});return doc.documentElement.outerHTML}
+        isInternalResource(url){if(!url)return!1;if(url.startsWith('http://')||url.startsWith('https://')){return!1}
+        if(url.startsWith('data:')){return!1}
+        if(url.startsWith('blob:')){return!1}
+        if(url.startsWith('//')){return!1}
+        if(url.includes(':')&&!url.startsWith('./')&&!url.startsWith('../')){return!1}
+        return!0}
+        isInternalNavigation(href){if(!href)return!1;if(href.startsWith('#')){return!0}
+        if(href.startsWith('http://')||href.startsWith('https://')){return!1}
+        if(href.startsWith('//')){return!1}
+        if(href.startsWith('mailto:')){return!1}
+        if(href.startsWith('tel:')){return!1}
+        if(href.includes(':')&&!href.startsWith('./')&&!href.startsWith('../')){return!1}
+        return!0}
+        convertToVirtualUrl(originalUrl,basePath,hash){let cleanUrl=originalUrl.split('?')[0].split('#')[0];if(cleanUrl.startsWith('./')){cleanUrl=cleanUrl.substring(2)}
+        if(cleanUrl.startsWith('../')){cleanUrl=this.resolveParentPath(basePath,cleanUrl)}else if(!cleanUrl.startsWith('/')){cleanUrl=basePath+cleanUrl}else{cleanUrl=cleanUrl.substring(1)}
+        return `/peerweb-site/${hash}/${cleanUrl}`}
+        convertNavigationToVirtualUrl(href,basePath,hash){if(href.startsWith('#')){return href}
+        return this.convertToVirtualUrl(href,basePath,hash)}
+        processCssContent(cssContent,basePath,hash){cssContent=cssContent.replace(/@import\s+['"]([^'"]+)['"]/g,(match,url)=>{if(this.isInternalResource(url)){const newUrl=this.convertToVirtualUrl(url,basePath,hash);return newUrl?`@import "${newUrl}"`:match}
+        return match});cssContent=cssContent.replace(/url\(['"]?([^'")\s]+)['"]?\)/g,(match,url)=>{if(this.isInternalResource(url)){const newUrl=this.convertToVirtualUrl(url,basePath,hash);return newUrl?`url("${newUrl}")`:match}
+        return match});return cssContent}
+        resolveParentPath(basePath,relativePath){const baseParts=basePath.split('/').filter(Boolean);const relativeParts=relativePath.split('/');for(const part of relativeParts){if(part==='..'){baseParts.pop()}else if(part!=='.'){baseParts.push(part)}}
+        return baseParts.join('/')}
+        sanitizeHtml(html){return DOMPurify.sanitize(html,{ADD_TAGS:['link','style','script'],ADD_ATTR:['href','src','type','rel','crossorigin','integrity','target','data','srcset'],ALLOW_UNKNOWN_PROTOCOLS:!0})}
+        getFileBuffer(file){return new Promise((resolve,reject)=>{file.getBuffer((err,buffer)=>{if(err)reject(err);else resolve(buffer)})})}
+        isTextFile(filename){const textExtensions=['.html','.css','.js','.json','.txt','.md','.xml','.svg'];return textExtensions.some(ext=>filename.toLowerCase().endsWith(ext))}
+        getContentType(filename){const ext=filename.toLowerCase().split('.').pop();const mimeTypes={'html':'text/html','htm':'text/html','css':'text/css','js':'application/javascript','mjs':'application/javascript','json':'application/json','png':'image/png','jpg':'image/jpeg','jpeg':'image/jpeg','gif':'image/gif','svg':'image/svg+xml','webp':'image/webp','ico':'image/x-icon','woff':'font/woff','woff2':'font/woff2','ttf':'font/ttf','otf':'font/otf','eot':'application/vnd.ms-fontobject','mp4':'video/mp4','webm':'video/webm','mp3':'audio/mpeg','wav':'audio/wav','pdf':'application/pdf'};return mimeTypes[ext]||'application/octet-stream'}
+        showSiteViewer(url,hash,fromCache){const mainContent=document.getElementById('main-content');const siteViewer=document.getElementById('site-viewer');const currentHash=document.getElementById('current-hash');const cacheStatus=document.getElementById('cache-status');const iframe=document.getElementById('site-frame');if(mainContent)mainContent.classList.add('hidden');if(siteViewer)siteViewer.classList.remove('hidden');if(currentHash)currentHash.textContent=`Hash: ${hash.substring(0, 16)}...`;if(cacheStatus)cacheStatus.textContent=fromCache?'💾 From Cache':'🌐 Fresh Download';if(iframe){iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-modals');iframe.onerror=(e)=>{this.log('Iframe error: '+e.message)};iframe.onload=()=>{this.log('Iframe loaded successfully')};iframe.src=url}
+        this.log(`Site loaded in iframe: ${url}`)}
+        showMainContent(){const siteViewer=document.getElementById('site-viewer');const mainContent=document.getElementById('main-content');const iframe=document.getElementById('site-frame');if(siteViewer)siteViewer.classList.add('hidden');if(mainContent)mainContent.classList.remove('hidden');if(iframe)iframe.src='';this.currentSiteData=null;this.currentHash=null;this.sendToServiceWorker('SITE_UNLOADED',{});window.history.pushState({},'',window.location.pathname)}
+        showLoadingOverlay(){const overlay=document.getElementById('loading-overlay');if(overlay)overlay.classList.remove('hidden');}
+        hideLoadingOverlay(){const overlay=document.getElementById('loading-overlay');if(overlay)overlay.classList.add('hidden');}
+        updateProgress(torrent){const progress=Math.round(torrent.progress*100);const progressBar=document.getElementById('loading-progress-bar');const progressText=document.getElementById('loading-progress-text');let displayProgress=progress;let statusText=`Downloading: ${progress}%`;if(progress>=95&&progress<100){const completedFiles=torrent.files.filter(f=>f.progress>=0.9).length;const totalFiles=torrent.files.length;statusText=`Processing files: ${completedFiles}/${totalFiles} ready`;displayProgress=Math.round((completedFiles/totalFiles)*100)}else if(progress===100){statusText='Download complete!'}
+        if(progressBar){progressBar.style.width=`${displayProgress}%`}
+        if(progressText){progressText.textContent=statusText}
+        if(this.debug){const debugProgressBar=document.getElementById('progress-bar');const debugProgressText=document.getElementById('progress-text');if(debugProgressBar){debugProgressBar.style.width=`${displayProgress}%`}
+        if(debugProgressText){debugProgressText.textContent=`Progress: ${statusText}`}}}
+        updatePeerStats(torrent){const peerStats=document.getElementById('peer-stats');const completedFiles=torrent.files.filter(f=>f.progress>=0.9).length;const totalFiles=torrent.files.length;const stats=`Peers: ${torrent.numPeers} | Files: ${completedFiles}/${totalFiles} ready | Downloaded: ${this.formatBytes(torrent.downloaded)} | Speed: ${this.formatBytes(torrent.downloadSpeed)}/s`;if(peerStats){peerStats.textContent=stats}
+        this.log(`Peer stats: ${stats}`)}
+        formatBytes(bytes){if(bytes===0)return'0 B';const k=1024;const sizes=['B','KB','MB','GB'];const i=Math.floor(Math.log(bytes)/Math.log(k));return parseFloat((bytes/Math.pow(k,i)).toFixed(2))+' '+sizes[i]}
+        toggleDebug(){this.debug=!this.debug;this.updateDebugToggle();if(this.debug){this.showDebugPanel()}else{this.hideDebugPanel()}}
+        updateDebugToggle(){const button=document.getElementById('debug-toggle');if(button){button.textContent=this.debug?'🐛 Disable Debug Mode':'🐛 Enable Debug Mode'}}
+        showDebugPanel(){const panel=document.getElementById('debug-panel');if(panel)panel.classList.remove('hidden');}
+        hideDebugPanel(){const panel=document.getElementById('debug-panel');if(panel)panel.classList.add('hidden');}
+        log(message){console.log(`[PeerWeb] ${message}`);if(this.debug){const debugContent=document.getElementById('debug-content');if(debugContent){const timestamp=new Date().toLocaleTimeString();debugContent.innerHTML+=`<div>[${timestamp}] ${message}</div>`;debugContent.scrollTop=debugContent.scrollHeight}}}
+        showError(message){console.error('[PeerWeb Error]',message);alert('PeerWeb Error: '+message)}
+        async clearCache(){await this.cache.clear();this.log('Cache cleared');alert('Cache cleared successfully!')}
+        showTorrentModal(){const modal=document.getElementById('torrent-modal');if(modal)modal.classList.remove('hidden');}
+        hideTorrentModal(){const modal=document.getElementById('torrent-modal');if(modal)modal.classList.add('hidden');const fileInput=document.getElementById('file-input');const fileList=document.getElementById('file-list');const createBtn=document.getElementById('create-torrent-btn');const result=document.getElementById('torrent-result');if(fileInput)fileInput.value='';if(fileList)fileList.innerHTML='';if(createBtn)createBtn.disabled=!0;if(result)result.classList.add('hidden');}
+        handleFileSelection(event){const files=Array.from(event.target.files);const fileList=document.getElementById('file-list');const createBtn=document.getElementById('create-torrent-btn');if(fileList){fileList.innerHTML='<h4>Selected Files:</h4>';files.forEach(file=>{const div=document.createElement('div');div.textContent=file.webkitRelativePath||file.name;fileList.appendChild(div)})}
+        if(createBtn){createBtn.disabled=files.length===0}}
+        createTorrent(){const fileInput=document.getElementById('file-input');if(!fileInput||!fileInput.files){alert('Please select files first!');return}
+        const files=Array.from(fileInput.files);if(files.length===0){alert('Please select files first!');return}
+        if(!this.clientReady||!this.client){alert('WebTorrent client not ready. Please wait a moment and try again.');return}
+        const hasIndex=files.some(file=>(file.webkitRelativePath||file.name).toLowerCase().includes('index.html'));if(!hasIndex){if(!confirm('No index.html found. Continue anyway? (Site may not load properly)')){return}}
+        this.log(`Creating torrent with ${files.length} files...`);const createBtn=document.getElementById('create-torrent-btn');const originalText=createBtn.textContent;createBtn.disabled=!0;createBtn.textContent='Creating Torrent...';try{this.client.seed(files,{announce:this.trackers,name:this.generateTorrentName(files),comment:'Created with PeerWeb - Decentralized Website Hosting',createdBy:'PeerWeb v1.0',private:!1,pieceLength:this.calculateOptimalPieceLength(files)},(torrent)=>{this.log(`Torrent created successfully: ${torrent.infoHash}`);this.log(`Torrent name: ${torrent.name}`);this.log(`Files: ${torrent.files.length}`);createBtn.disabled=!1;createBtn.textContent=originalText;this.showTorrentCreationResult(torrent)})}catch(error){this.log(`Error creating torrent: ${error.message}`);console.error('Torrent creation error:',error);createBtn.disabled=!1;createBtn.textContent=originalText;alert('Error creating torrent: '+error.message)}}
+        generateTorrentName(files){if(files.length===1){return files[0].name.replace(/\.[^/.]+$/,"")}
+        const paths=files.map(f=>f.webkitRelativePath||f.name);if(paths.length>0&&paths[0].includes('/')){const basePath=paths[0].split('/')[0];if(paths.every(path=>path.startsWith(basePath))){return basePath}}
+        return `PeerWeb-Site-${Date.now()}`}
+        calculateOptimalPieceLength(files){const totalSize=files.reduce((sum,file)=>sum+file.size,0);if(totalSize<16*1024*1024){return 16*1024}else if(totalSize<256*1024*1024){return 32*1024}else if(totalSize<1024*1024*1024){return 256*1024}else{return 1024*1024}}
+        showTorrentCreationResult(torrent){const resultDiv=document.getElementById('torrent-result');const hashSpan=document.getElementById('created-hash');const urlSpan=document.getElementById('created-url');const downloadLink=document.getElementById('download-torrent');const hash=torrent.infoHash;const url=`${window.location.origin}${window.location.pathname}?orc=${hash}`;if(hashSpan)hashSpan.textContent=hash;if(urlSpan)urlSpan.textContent=url;if(downloadLink&&torrent.torrentFile){try{const blob=new Blob([torrent.torrentFile],{type:'application/x-bittorrent'});const downloadUrl=URL.createObjectURL(blob);downloadLink.href=downloadUrl;downloadLink.download=`${torrent.name || 'website'}.torrent`;downloadLink.style.display='inline-flex';this.log(`Torrent file created: ${torrent.torrentFile.byteLength} bytes`)}catch(error){this.log(`Error creating torrent file download: ${error.message}`);downloadLink.style.display='none'}}
+        if(resultDiv){resultDiv.classList.remove('hidden')}}}
+        class PeerWebCache{constructor(){this.dbName='PeerWebCache';this.version=1;this.storeName='sites';this.maxAge=7*24*60*60*1000}
+        async openDB(){return new Promise((resolve,reject)=>{const request=indexedDB.open(this.dbName,this.version);request.onerror=()=>reject(request.error);request.onsuccess=()=>resolve(request.result);request.onupgradeneeded=(event)=>{const db=event.target.result;if(!db.objectStoreNames.contains(this.storeName)){const store=db.createObjectStore(this.storeName,{keyPath:'hash'});store.createIndex('timestamp','timestamp')}}})}
+        async set(hash,data){try{const db=await this.openDB();const transaction=db.transaction([this.storeName],'readwrite');const store=transaction.objectStore(this.storeName);const record={hash:hash,data:data,timestamp:Date.now()};await store.put(record);console.log(`[PeerWebCache] Cached site: ${hash}`)}catch(error){console.error('[PeerWebCache] Error caching site:',error)}}
+        async get(hash){try{const db=await this.openDB();const transaction=db.transaction([this.storeName],'readonly');const store=transaction.objectStore(this.storeName);return new Promise((resolve,reject)=>{const request=store.get(hash);request.onsuccess=()=>{const result=request.result;if(result&&(Date.now()-result.timestamp)<this.maxAge){console.log(`[PeerWebCache] Cache hit: ${hash}`);resolve(result.data)}else{if(result){this.delete(hash)}
+        resolve(null)}};request.onerror=()=>reject(request.error)})}catch(error){console.error('[PeerWebCache] Error retrieving from cache:',error);return null}}
+        async delete(hash){try{const db=await this.openDB();const transaction=db.transaction([this.storeName],'readwrite');const store=transaction.objectStore(this.storeName);await store.delete(hash)}catch(error){console.error('[PeerWebCache] Error deleting from cache:',error)}}
+        async clear(){try{const db=await this.openDB();const transaction=db.transaction([this.storeName],'readwrite');const store=transaction.objectStore(this.storeName);await store.clear();console.log('[PeerWebCache] Cache cleared')}catch(error){console.error('[PeerWebCache] Error clearing cache:',error)}}}
+        document.addEventListener('DOMContentLoaded',()=>{window.peerWeb=new PeerWeb()})
+    </script>
+</body>
+</html>
