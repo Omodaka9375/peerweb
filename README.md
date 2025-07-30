@@ -1,7 +1,7 @@
 # 🪐 PeerWeb 🪐 
 
 
-**Decentralized website hosting powered by BitTorrent technology** 🚀
+**🌏 Decentralized website hosting powered by WebTorrent 🌏** 
 
 PeerWeb enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
 
@@ -38,7 +38,7 @@ PeerWeb enables truly decentralized, censorship-resistant website hosting throug
 ## 🚀 Quick Start
 
 ### 1. Host a Website
-1. Open PeerWeb.lol in your browser
+1. Open [PeerWeb.lol](https://peerweb.lol) in your browser
 2. Drag your website folder to the upload area
 3. Get your unique PeerWeb URL, and keep the tab open
 4. Share the link with anyone, anywhere!
