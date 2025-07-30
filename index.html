@@ -105,6 +105,10 @@
         margin-bottom: 2rem;
     }
 
+    #create-torrent{
+        display: none;
+    }
+
     .btn {
         padding: 0.75rem 1.5rem;
         border: none;
@@ -859,6 +863,11 @@
         transform: translateY(0);
     }
 
+    .maintitle {
+        text-decoration: none;
+        color: #ddd;
+    }
+
     /* Success animation */
     @keyframes success-bounce {
         0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
@@ -898,7 +907,7 @@
 <body>
     <div id="main-content">
         <header class="hero">
-            <h1>🪐 PeerWeb</h1>
+            <h1><a class="maintitle" href="https://github.com/Omodaka9375/peerweb" target="_blank">🪐 PeerWeb</a></h1>
             <h2>Decentralized Website Hosting via WebTorrent</h2>
         </header>
 
