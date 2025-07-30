@@ -5,7 +5,7 @@
 
 PeerWeb enables truly decentralized, censorship-resistant website hosting through peer-to-peer networks. Upload your static websites and share them globally without relying on centralized servers or paying hosting fees.
 
-<img width="1391" height="926" alt="image" src="https://github.com/user-attachments/assets/79f90f16-62f1-471f-93bb-14d20b39af98" />
+<img width="1356" height="957" alt="image" src="https://github.com/user-attachments/assets/9b47f09d-e2ca-4b82-a936-ff8445d8a4fa" />
 
 
 ## ✨ Features
