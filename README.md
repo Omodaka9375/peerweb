@@ -7,12 +7,13 @@
 
 <img width="1356" height="957" alt="image" src="https://github.com/user-attachments/assets/9b47f09d-e2ca-4b82-a936-ff8445d8a4fa" />
 
-## Where to start
+## Links
 
-- **Main Mage** - [https://peerweb.lol](https://peerweb.lol)
+- **Main Page** - [https://peerweb.lol](https://peerweb.lol)
 
-- **Demo with functionality test** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
+- **Demo with Functionality Tests** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
 
+- **SomaFM on PeerWeb** - [https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259](https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259)
 
 ## ✨ Features
 
