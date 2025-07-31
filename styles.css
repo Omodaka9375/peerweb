@@ -306,8 +306,12 @@ h3 {
 
 .site-frame {
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 0px);
     border: none;
+}
+
+.demo-link{
+    font-size: inherit;
 }
 
 .modal {
