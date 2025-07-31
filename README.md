@@ -7,13 +7,17 @@
 
 <img width="1356" height="957" alt="image" src="https://github.com/user-attachments/assets/9b47f09d-e2ca-4b82-a936-ff8445d8a4fa" />
 
-## Links
+## Link demos
 
 - **Main Page** - [https://peerweb.lol](https://peerweb.lol)
 
-- **Demo with Functionality Tests** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
+- **Functionality Demo with local resources** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
 
 - **SomaFM on PeerWeb** - [https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259](https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259)
+  
+- **Chess on PeerWeb** - [https://peerweb.lol/?orc=525bad84c4637cc49b47e3b9a5e3e9bd6a6dc398](https://peerweb.lol/?orc=525bad84c4637cc49b47e3b9a5e3e9bd6a6dc398) 
+
+- **Text Editor app on PeerWeb** - [https://peerweb.lol/?orc=4e5f1204dcec68195bfcc89f9410a0b70a0ddfac](https://peerweb.lol/?orc=4e5f1204dcec68195bfcc89f9410a0b70a0ddfac)
 
 ## ✨ Features
 
