@@ -11,7 +11,7 @@
 
 - **Main Page** - [https://peerweb.lol](https://peerweb.lol)
 
-- **Functionality Demo with local resoures** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
+- **Functionality Demo with local resources** - [https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c](https://peerweb.lol/?orc=90c020bd252639622a14895a0fad713b91e0130c)
 
 - **SomaFM on PeerWeb** - [https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259](https://peerweb.lol/?orc=908d19242ae1461f333a516d1f8b89c13ef2d259)
   
